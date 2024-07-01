@@ -1,0 +1,28 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: scroll;
+}
+
+.button {
+  padding: 4px 8px;
+  border: 1px solid var(--primary-color);
+  border-radius: 12px;
+  width: 100%;
+  font-family: "IBM Plex Sans Hebrew", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--primary-color);
+  background-color: transparent;
+  transition: all .3s ease;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.button:hover {
+  color: var(--primary-background);
+  background-color: var(--button-hover);
+}

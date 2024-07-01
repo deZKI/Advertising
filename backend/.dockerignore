@@ -1,0 +1,13 @@
+README.md
+__pycache__/
+.vscode
+local_settings.py
+.pytest_cache/
+.vscode/
+.idea/
+*.log**/.git
+**/.gitignore
+**/.DS_Store
+**/Thumbs.db
+docker-compose.override.yml
+venv

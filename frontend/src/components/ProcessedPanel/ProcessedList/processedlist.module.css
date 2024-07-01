@@ -1,0 +1,31 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: scroll;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 8px;
+  border: 1px solid var(--video-success);
+  border-radius: 12px;
+  width: 100%;
+  font-family: "IBM Plex Sans Hebrew", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--video-success);
+  background-color: transparent;
+  transition: all .3s ease;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.button:hover {
+  color: var(--primary-background);
+  background-color: var(--video-success);
+}
