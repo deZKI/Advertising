@@ -1,0 +1,40 @@
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: var(--header-background);
+  z-index: var(--zindex-sticky);
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  padding: 22px 32px 18px 32px;
+  max-width: 1440px;
+}
+
+.link {
+  width: 120px;
+}
+
+.image {
+  width: 100%;
+}
+
+.main {
+  position: relative;
+}
+
+.leaflet {
+  display: block;
+  width: 100%;
+  height: 100vh;
+}
+
+@media (prefers-color-scheme: dark) {
+  .leaflet__tiles {
+    filter: var(--leaflet-tiles-filter, none);
+  }
+}

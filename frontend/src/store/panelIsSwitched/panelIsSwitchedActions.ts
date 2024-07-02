@@ -11,6 +11,3 @@ export const setPanelIsSwitched: ActionCreator<SetPanelIsSwitchedAction> = (pane
   type: SET_PANEL_IS_SWITCHED,
   panelIsSwitched
 })
-
-
-

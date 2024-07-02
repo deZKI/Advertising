@@ -1,41 +1,23 @@
-import React, {useState, useEffect} from 'react';
+import React, {Suspense, lazy} from 'react';
+import 'leaflet/dist/leaflet.css'
 import './main.global.css';
-import {Provider} from "react-redux";
-import {BrowserRouter, Route, Navigate, Routes} from "react-router-dom";
 import {composeWithDevTools} from "redux-devtools-extension";
 import {applyMiddleware, createStore} from "redux";
+import {Provider} from "react-redux";
 import {rootReducer} from './store/reducer';
-import {Header} from './components/Header';
-import {EntryPage} from './components/EntryPage';
-import {UploadingPage} from './components/UploadingPage';
 import thunk from "redux-thunk";
+import LoaderPage from './pages/LoaderPage/LoaderPage';
 
 const middleware = [thunk];
-const store = createStore(rootReducer, composeWithDevTools(
-  applyMiddleware(...middleware)
-));
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(...middleware)));
+const LazyHomePage = lazy(() => import('./pages/HomePage/HomePage'));
 
-function AppComponent() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
+export default function App() {
   return (
-    <>
-      {mounted &&
-        <BrowserRouter>
-          <Header />
-          <Routes>
-            <Route path="/" element={<EntryPage />} />
-            <Route path="/load-panel" element={<UploadingPage />} />
-          </Routes>
-        </BrowserRouter>
-      }
-    </>
+    <Provider store={store}>
+      <Suspense fallback={<LoaderPage />}>
+        <LazyHomePage />
+      </Suspense>
+    </Provider>
   );
 }
-
-export const App = () => 
-  <Provider store={store}>
-    <AppComponent />
-  </Provider>
-;

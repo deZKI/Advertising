@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "advertising",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,27 +7,32 @@
     "build": "react-scripts build"
   },
   "dependencies": {
-    "axios": "^0.20.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-player": "^2.16.0",
+    "axios": "^1.7.2",
+    "classnames": "^2.5.1",
+    "leaflet": "^1.9.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-leaflet": "^4.2.1",
     "react-redux": "^7.2.9",
-    "react-router-dom": "^6.10.0",
+    "react-router-dom": "^6.24.0",
     "react-scripts": "5.0.1",
-    "react-use-downloader": "^1.2.8",
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.2",
-    "typescript": "^4.9.5"
+    "typescript": "^5.5.2"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.12",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@types/react-redux": "^7.1.25",
+    "@types/react-redux": "^7.1.33",
     "@types/react-router-dom": "^5.3.3"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "browserslist": {
     "production": [
