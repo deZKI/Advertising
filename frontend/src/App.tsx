@@ -1,5 +1,4 @@
 import React, {Suspense, lazy} from 'react';
-import 'leaflet/dist/leaflet.css'
 import './main.global.css';
 import {composeWithDevTools} from "redux-devtools-extension";
 import {applyMiddleware, createStore} from "redux";

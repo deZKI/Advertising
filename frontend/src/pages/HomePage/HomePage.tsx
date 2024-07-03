@@ -1,10 +1,22 @@
 import React from 'react';
 import styles from './homepage.module.css';
-import {MapContainer, TileLayer} from 'react-leaflet'
-import LogoImage from '../../assets/images/adspotter_logo.png'
+import {generateRandomCoordinates} from '../../utils/generateRandomCoordinates';
+import {generateRandomString} from '../../utils/generateRandomString';
+import {generateRandomType} from '../../utils/generateRandomType';
+import LogoImage from '../../assets/images/adspotter_logo.png';
 import Panel from '../../ui/Panel/Panel';
+import Map from '../../ui/Map/Map';
 
 export default function HomePage() {
+  const generateRandomBanners = () => Array.from(Array(1000).keys()).map(() => {
+    return {
+      id: generateRandomString(),
+      type: generateRandomType(),
+      coordinate: generateRandomCoordinates()
+    }
+  })
+  const bannersList = generateRandomBanners();
+
   return (
     <>
       <header className={styles.header}>
@@ -16,12 +28,7 @@ export default function HomePage() {
       </header>
       <main className={styles.main}>
         <Panel />
-        <MapContainer className={styles.leaflet} center={[55.7522, 37.3656]} zoom={11}>
-          <TileLayer 
-            className={styles.leaflet__tiles}
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
-          />
-        </MapContainer>
+        <Map list={bannersList} />
       </main>
     </>
   );

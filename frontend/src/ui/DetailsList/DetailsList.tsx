@@ -3,6 +3,7 @@ import styles from './detailslist.module.css';
 import classNames from 'classnames';
 import {TAdvantages} from '../../types/advantages.type';
 import {TContacts} from '../../types/contacts.type';
+import { formatPhoneNumber } from '../../utils/formatPhoneNumber';
 
 type TProps = {
   type: string;
@@ -56,7 +57,9 @@ export default function DetailsList({ type, coverage, description, advantages, c
           {contacts.map((contact) =>
             <li className={styles.contact__item} key={contact.id}>
               <span className={styles.name}>{contact.name}</span>
-              <span className={styles.contact}>{contact.description}</span>
+              <span className={styles.contact}>
+                {formatPhoneNumber(contact.description)}
+              </span>
             </li>
           )}
         </ul>
