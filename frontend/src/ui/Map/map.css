@@ -51,3 +51,24 @@
 .leaflet-touch .leaflet-bar a span {
   color: var(--primary-color);
 }
+
+.leaflet-popup-content-wrapper {
+  background-color: var(--panel-background);
+}
+
+.leaflet-popup-tip {
+  background-color: var(--panel-background);
+}
+
+.leaflet-popup-content {
+  color: var(--primary-color);
+}
+
+.leaflet-popup-close-button span {
+  color: var(--primary-color);
+  transition: color .3s ease;
+}
+
+.leaflet-popup-close-button span:hover {
+  color: var(--optional-text-color);
+}
