@@ -1,4 +1,5 @@
 import {TAdvantages} from './advantages.type';
+import {TCoordinate} from './coordinate.type';
 import {TContacts} from './contacts.type';
 
 export type TItem = {
@@ -10,4 +11,5 @@ export type TItem = {
   description: string;
   advantages: TAdvantages[];
   contacts: TContacts[];
+  coordinate: TCoordinate;
 }

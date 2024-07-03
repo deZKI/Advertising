@@ -2,11 +2,11 @@ import React from 'react';
 import 'leaflet/dist/leaflet.css';
 import './map.css';
 import {MapContainer, TileLayer, Marker, Popup} from 'react-leaflet';
-import {TBanner} from '../../types/banner.type';
-import { getIconByType } from '../../utils/getIconByType';
+import {getIconByType} from '../../utils/getIconByType';
+import {TItem} from '../../types/item.type';
 
 type TMap = {
-  list: TBanner[];
+  list: TItem[];
 }
 
 export default function Map({ list }: TMap) {
@@ -21,7 +21,9 @@ export default function Map({ list }: TMap) {
         <Marker 
           position={[item.coordinate.latitude, item.coordinate.longitude]} 
           icon={getIconByType(item.type)}
-        />
+        >
+          <Popup>{item.address}</Popup>
+        </Marker>
       )}
     </MapContainer>
   );
