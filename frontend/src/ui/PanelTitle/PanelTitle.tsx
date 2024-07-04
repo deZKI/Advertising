@@ -3,13 +3,23 @@ import styles from './paneltitle.module.css';
 
 type TProps = {
   title: string;
-  subtitle?: string;
   address?: string;
+  subtitle?: string;
+  listSwitcher?: string;
   closeButton?: boolean;
   onCloseClick?: () => void;
+  onChooseClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export default function PanelTitle({ title, subtitle, closeButton, address, onCloseClick }: TProps) {
+export default function PanelTitle({ 
+  title,
+  address,
+  subtitle,
+  closeButton,
+  listSwitcher,
+  onCloseClick,
+  onChooseClick
+}: TProps) {
   return (
     <div className={styles.container}>
       <div className={styles.title__container}>
@@ -23,7 +33,47 @@ export default function PanelTitle({ title, subtitle, closeButton, address, onCl
           : <h4 className={styles.subtitle}>{subtitle}</h4> 
         }
       </div>
-      {address && <span className={styles.address}>{address}</span>}
+      {!address
+        ? <div className={styles.navigation__container}>
+            <button
+              id="navigation__button__high"
+              className={`
+                ${styles.navigation__button}
+                ${styles.navigation__button__high}
+                ${listSwitcher === "navigation__button__high" 
+                    ? styles.navigation__button__high__active 
+                    : ""
+                }
+              `}
+              onClick={onChooseClick}
+            >Высокий</button>
+            <button
+              id="navigation__button__middle"
+              className={`
+                ${styles.navigation__button}
+                ${styles.navigation__button__middle}
+                ${listSwitcher === "navigation__button__middle" 
+                    ? styles.navigation__button__middle__active 
+                    : ""
+                }
+              `}
+              onClick={onChooseClick}
+            >Средний</button>
+            <button
+              id="navigation__button__low"
+              className={`
+                ${styles.navigation__button}
+                ${styles.navigation__button__low}
+                ${listSwitcher === "navigation__button__low" 
+                    ? styles.navigation__button__low__active 
+                    : ""
+                }
+              `}
+              onClick={onChooseClick}
+            >Низкий</button>
+          </div>
+        : <span className={styles.address}>{address}</span>
+      }
     </div>
   );
 }

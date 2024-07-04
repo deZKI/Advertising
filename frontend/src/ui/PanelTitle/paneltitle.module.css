@@ -2,7 +2,6 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 8px;
   padding: 0 16px;
   width: 100%;
 }
@@ -47,12 +46,90 @@
   stroke: var(--item-hover-background);
 }
 
+.navigation__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0 0 0;
+}
+
+.navigation__button {
+  padding: 8px 16px;
+  margin: 0;
+  border-radius: 8px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 19px;
+  outline: 1px solid transparent;
+  transition: all .3s ease;
+}
+
+.navigation__button__high {
+  color: var(--circle-high-background);
+  background-color: transparent;
+  outline: 1px solid var(--circle-high-background);
+}
+
+.navigation__button__high__active {
+  color: var(--primary-color);
+  background-color: var(--circle-high-background);
+}
+
+.navigation__button__high:hover,
+.navigation__button__high:active,
+.navigation__button__high:focus {
+  color: var(--primary-color);
+  background-color: var(--circle-high-background);
+}
+
+.navigation__button__middle {
+  color: var(--circle-middle-background);
+  background-color: transparent;
+  outline: 1px solid var(--circle-middle-background);
+}
+
+.navigation__button__middle__active {
+  color: var(--primary-color);
+  background-color: var(--circle-middle-background);
+}
+
+.navigation__button__middle:hover,
+.navigation__button__middle:active,
+.navigation__button__middle:focus {
+  color: var(--primary-color);
+  background-color: var(--circle-middle-background);
+}
+
+.navigation__button__low {
+  color: var(--circle-low-background);
+  background-color: transparent;
+  outline: 1px solid var(--circle-low-background);
+}
+
+.navigation__button__low__active {
+  color: var(--primary-color);
+  background-color: var(--circle-low-background);
+}
+
+.navigation__button__low:hover,
+.navigation__button__low:active,
+.navigation__button__low:focus {
+  color: var(--primary-color);
+  background-color: var(--circle-low-background);
+}
+
+.active
+
 .address__container {
   display: flex;
   align-items: center;
 }
 
 .address {
+  display: flex;
+  align-items: center;
+  margin: 8px 0 0 0;
   font-family: "Segoe UI", sans-serif;
   font-size: 12px;
   font-weight: 350;

@@ -1,13 +1,13 @@
 import {initialState} from "../reducer";
 import {SET_PANEL_IS_SWITCHED, SetPanelIsSwitchedAction} from "./panelIsSwitchedActions";
 
-export interface IPanelIsSwitchedState {
+export type TPanelIsSwitchedState = {
   panelIsSwitched: boolean;
 }
 
 type PanelIsSwitchedActions = SetPanelIsSwitchedAction;
 
-export const panelIsSwitchedReducer = (state = initialState.panelIsSwitched, action: PanelIsSwitchedActions): IPanelIsSwitchedState => {
+export const panelIsSwitchedReducer = (state = initialState.panelIsSwitched, action: PanelIsSwitchedActions): TPanelIsSwitchedState => {
   switch (action.type) {
     case SET_PANEL_IS_SWITCHED:
       return {
