@@ -17,8 +17,12 @@ class ContactSerializer(serializers.ModelSerializer):
 class AdvertisementSerializer(serializers.ModelSerializer):
     advantages = AdvantageSerializer(many=True)
     contacts = ContactSerializer(many=True)
+    coordinate = serializers.SerializerMethodField()
+
+    def get_coordinate(self, obj):
+        return {'latitude': obj.latitude, 'longitude': obj.longitude}
 
     class Meta:
         model = Advertisement
-        fields = ['id', 'type', 'address', 'longitude', 'latitude', 'distance', 'coverage', 'description', 'advantages',
+        fields = ['id', 'type', 'address', 'coordinate', 'distance', 'coverage', 'description', 'advantages',
                   'contacts']
