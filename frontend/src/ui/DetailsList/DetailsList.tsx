@@ -1,16 +1,17 @@
 import React from 'react';
 import styles from './detailslist.module.css';
-import classNames from 'classnames';
+import {formatPhoneNumber} from '../../utils/formatPhoneNumber';
 import {TAdvantages} from '../../types/advantages.type';
 import {TContacts} from '../../types/contacts.type';
-import { formatPhoneNumber } from '../../utils/formatPhoneNumber';
+import classNames from 'classnames';
 
 type TProps = {
   type: string;
   coverage: number;
-  description: string;
-  advantages: TAdvantages[];
   contacts: TContacts[];
+  advantages: TAdvantages[];
+  description: string;
+  onZoomClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export default function DetailsList({ type, coverage, description, advantages, contacts }: TProps) {

@@ -105,6 +105,9 @@
 }
 
 .name {
+  display: flex;
+  align-items: center;
+  width: 35%;
   font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 400;
@@ -113,6 +116,9 @@
 }
 
 .contact {
+  display: flex;
+  align-items: center;
+  width: 60%;
   font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 400;

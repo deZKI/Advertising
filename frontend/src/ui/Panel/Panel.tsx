@@ -1,23 +1,22 @@
 import React from 'react';
 import styles from './panel.module.css';
 import {setPanelIsSwitched} from '../../store/panelIsSwitched/panelIsSwitchedActions';
-import {setListSwitcher} from '../../store/listSwitcher/listSwitcherActions';
+import {setTypeSwitcher} from '../../store/typeSwitcher/typeSwitcherActions';
 import {setItemData} from '../../store/itemData/itemDataActions';
 import PanelTitle from '../../ui/PanelTitle/PanelTitle';
 import CoverageList from '../CoverageList/CoverageList';
 import DetailsList from '../DetailsList/DetailsList';
-import {useSelector, useDispatch} from 'react-redux';
-import {TInitialState} from '../../store/reducer';
 import {TItem} from '../../types/item.type';
+import {useDispatch} from 'react-redux';
 
 type TPanel = {
+  item: TItem;
   list: TItem[];
+  typeSwitcher: "high" | "middle" | "low";
+  panelIsSwitched: boolean;
 }
 
-export default function Panel({ list }: TPanel) {
-  const panelIsSwitched = useSelector<TInitialState, boolean>(state => state.panelIsSwitched.panelIsSwitched);
-  const listSwitcher = useSelector<TInitialState, string>(state => state.listSwitcher.listSwitcher);
-  const item = useSelector<TInitialState, TItem>(state => state.itemData.itemData);
+export default function Panel({ item, list, typeSwitcher, panelIsSwitched }: TPanel) {
   const dispatch = useDispatch();
 
   function handleOpenClick(e: React.MouseEvent<HTMLElement>) {
@@ -29,12 +28,16 @@ export default function Panel({ list }: TPanel) {
   }
 
   function handleChooseClick(e: React.MouseEvent<HTMLButtonElement>) {
-    const buttonID = e.currentTarget.id
-    dispatch(setListSwitcher(buttonID));
+    const buttonID = e.currentTarget.id;
+    dispatch(setTypeSwitcher(buttonID));
   }
 
   function handleCloseClick() {
     dispatch(setPanelIsSwitched(false));
+  }
+
+  function handleZoomClick(e: React.MouseEvent<HTMLButtonElement>) {
+    // const buttonID = e.currentTarget.id;
   }
 
   return (
@@ -43,7 +46,7 @@ export default function Panel({ list }: TPanel) {
         ? <PanelTitle
             title='Рекламные щиты'
             subtitle='по охвату'
-            listSwitcher={listSwitcher}
+            typeSwitcher={typeSwitcher}
             onChooseClick={handleChooseClick}
           />
         : <PanelTitle
@@ -56,21 +59,21 @@ export default function Panel({ list }: TPanel) {
       }
       {!panelIsSwitched
         ? <div className={styles.list}>
-            {listSwitcher === "navigation__button__high"
+            {typeSwitcher === "high"
               ? <CoverageList 
                   list={list.filter((item) => item.type === "high")} 
                   onOpenClick={handleOpenClick}
                 />
               : ""
             }
-            {listSwitcher === "navigation__button__middle"
+            {typeSwitcher === "middle"
               ? <CoverageList 
                   list={list.filter((item) => item.type === "middle")} 
                   onOpenClick={handleOpenClick}
                 />
               : ""
             }
-            {listSwitcher === "navigation__button__low"
+            {typeSwitcher === "low"
               ? <CoverageList 
                   list={list.filter((item) => item.type === "low")} 
                   onOpenClick={handleOpenClick}
@@ -84,6 +87,7 @@ export default function Panel({ list }: TPanel) {
             description={item.description}
             advantages={item.advantages}
             contacts={item.contacts}
+            onZoomClick={handleZoomClick}
           />
       }
     </div>

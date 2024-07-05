@@ -12,4 +12,5 @@ export type TItem = {
   advantages: TAdvantages[];
   contacts: TContacts[];
   coordinate: TCoordinate;
+  zoom: number;
 }

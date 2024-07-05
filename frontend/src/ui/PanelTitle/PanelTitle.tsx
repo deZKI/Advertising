@@ -5,7 +5,7 @@ type TProps = {
   title: string;
   address?: string;
   subtitle?: string;
-  listSwitcher?: string;
+  typeSwitcher?: "high" | "middle" | "low";
   closeButton?: boolean;
   onCloseClick?: () => void;
   onChooseClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -16,7 +16,7 @@ export default function PanelTitle({
   address,
   subtitle,
   closeButton,
-  listSwitcher,
+  typeSwitcher,
   onCloseClick,
   onChooseClick
 }: TProps) {
@@ -36,38 +36,29 @@ export default function PanelTitle({
       {!address
         ? <div className={styles.navigation__container}>
             <button
-              id="navigation__button__high"
+              id="high"
               className={`
                 ${styles.navigation__button}
                 ${styles.navigation__button__high}
-                ${listSwitcher === "navigation__button__high" 
-                    ? styles.navigation__button__high__active 
-                    : ""
-                }
+                ${typeSwitcher === "high" ? styles.navigation__button__high__active : ""}
               `}
               onClick={onChooseClick}
             >Высокий</button>
             <button
-              id="navigation__button__middle"
+              id="middle"
               className={`
                 ${styles.navigation__button}
                 ${styles.navigation__button__middle}
-                ${listSwitcher === "navigation__button__middle" 
-                    ? styles.navigation__button__middle__active 
-                    : ""
-                }
+                ${typeSwitcher === "middle" ? styles.navigation__button__middle__active : ""}
               `}
               onClick={onChooseClick}
             >Средний</button>
             <button
-              id="navigation__button__low"
+              id="low"
               className={`
                 ${styles.navigation__button}
                 ${styles.navigation__button__low}
-                ${listSwitcher === "navigation__button__low" 
-                    ? styles.navigation__button__low__active 
-                    : ""
-                }
+                ${typeSwitcher === "low" ? styles.navigation__button__low__active : ""}
               `}
               onClick={onChooseClick}
             >Низкий</button>

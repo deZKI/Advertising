@@ -1,5 +1,5 @@
-import CoverageHighIcon from '../assets/images/coverage_high_icon.png';
 import CoverageMiddleIcon from '../assets/images/coverage_middle_icon.png';
+import CoverageHighIcon from '../assets/images/coverage_high_icon.png';
 import CoverageLowIcon from '../assets/images/coverage_low_icon.png';
 import L from 'leaflet';
 
