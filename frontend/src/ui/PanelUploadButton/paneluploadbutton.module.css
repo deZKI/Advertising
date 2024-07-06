@@ -1,0 +1,36 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 10px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  width: 200px;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 27px;
+  color: var(--panel-background);
+  background-color: var(--primary-color);
+  transition: all .3s ease;
+}
+
+.button:hover {
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  background-color: transparent;
+}
+
+.button:active {
+  border: 1px solid transparent;
+  color: var(--panel-background);
+  background-color: var(--primary-color);
+}

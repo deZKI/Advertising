@@ -1,8 +1,9 @@
-import {initialState} from "../reducer";
 import {SET_TYPE_SWITCHER, SetTypeSwitcherAction} from "./typeSwitcherActions";
+import {TCoverageTypes} from "../../types/coverageTypes";
+import {initialState} from "../reducer";
 
 export type TTypeSwitcherState = {
-  typeSwitcher: "high" | "middle" | "low";
+  typeSwitcher: TCoverageTypes;
 }
 
 type TypeSwitcherActions = SetTypeSwitcherAction;
@@ -18,4 +19,3 @@ export const typeSwitcherReducer = (state = initialState.typeSwitcher, action: T
       return state;
   }
 }
-

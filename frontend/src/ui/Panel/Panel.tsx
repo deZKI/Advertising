@@ -2,21 +2,36 @@ import React from 'react';
 import styles from './panel.module.css';
 import {setPanelIsSwitched} from '../../store/panelIsSwitched/panelIsSwitchedActions';
 import {setTypeSwitcher} from '../../store/typeSwitcher/typeSwitcherActions';
+import PanelUplaodButton from '../PanelUploadButton/PanelUplaodButton';
 import {setItemData} from '../../store/itemData/itemDataActions';
+import PanelNavigation from '../PanelNavigation/PanelNavigation';
+import AnalyticsList from '../AnalyticsList/AnalyticsList';
+import {TCoverageTypes} from '../../types/coverageTypes';
 import PanelTitle from '../../ui/PanelTitle/PanelTitle';
 import CoverageList from '../CoverageList/CoverageList';
 import DetailsList from '../DetailsList/DetailsList';
+import {TCSVData} from '../../types/csvData.type';
 import {TItem} from '../../types/item.type';
+import {TMode} from '../../types/mode.type';
 import {useDispatch} from 'react-redux';
 
 type TPanel = {
   item: TItem;
   list: TItem[];
-  typeSwitcher: "high" | "middle" | "low";
+  csvData: TCSVData;
+  typeSwitcher: TCoverageTypes;
+  modeSwitcher: TMode;
   panelIsSwitched: boolean;
 }
 
-export default function Panel({ item, list, typeSwitcher, panelIsSwitched }: TPanel) {
+export default function Panel({
+  item,
+  list,
+  csvData,
+  typeSwitcher,
+  modeSwitcher,
+  panelIsSwitched
+}: TPanel) {
   const dispatch = useDispatch();
 
   function handleOpenClick(e: React.MouseEvent<HTMLElement>) {
@@ -36,59 +51,43 @@ export default function Panel({ item, list, typeSwitcher, panelIsSwitched }: TPa
     dispatch(setPanelIsSwitched(false));
   }
 
-  function handleZoomClick(e: React.MouseEvent<HTMLButtonElement>) {
-    // const buttonID = e.currentTarget.id;
-  }
-
   return (
     <div className={styles.panel}>
-      {!panelIsSwitched
-        ? <PanelTitle
-            title='Рекламные щиты'
-            subtitle='по охвату'
-            typeSwitcher={typeSwitcher}
-            onChooseClick={handleChooseClick}
-          />
-        : <PanelTitle
-            title={`Рекламный щит ${item.id}`}
-            closeButton={true}
-            address={item.address}
-            onCloseClick={handleCloseClick}
-            onChooseClick={handleChooseClick}
-          /> 
-      }
-      {!panelIsSwitched
-        ? <div className={styles.list}>
-            {typeSwitcher === "high"
-              ? <CoverageList 
-                  list={list.filter((item) => item.type === "high")} 
-                  onOpenClick={handleOpenClick}
-                />
-              : ""
-            }
-            {typeSwitcher === "middle"
-              ? <CoverageList 
-                  list={list.filter((item) => item.type === "middle")} 
-                  onOpenClick={handleOpenClick}
-                />
-              : ""
-            }
-            {typeSwitcher === "low"
-              ? <CoverageList 
-                  list={list.filter((item) => item.type === "low")} 
-                  onOpenClick={handleOpenClick}
-                />
-              : ""
-            }
-          </div>
-        : <DetailsList 
-            type={item.type}
-            coverage={item.coverage}
-            description={item.description}
-            advantages={item.advantages}
-            contacts={item.contacts}
-            onZoomClick={handleZoomClick}
-          />
+      {Object.keys(csvData).length !== 0
+        ? modeSwitcher === "districts"
+            ? <>
+                <div className={styles.header}>
+                  {!panelIsSwitched
+                    ? <PanelTitle title='Рекламные щиты' subtitle='по охвату' />
+                    : <PanelTitle title='Рекламный щит' closeButton={true} onCloseClick={handleCloseClick} /> 
+                  }
+                  <PanelNavigation
+                    address={item.address}
+                    typeSwitcher={typeSwitcher}
+                    panelIsSwitched={panelIsSwitched}
+                    onChooseClick={handleChooseClick}
+                  />
+                </div>
+                {!panelIsSwitched
+                  ? <CoverageList 
+                      list={list.filter((item) => item.type === typeSwitcher)} 
+                      onOpenClick={handleOpenClick}
+                    />
+                  : <DetailsList 
+                      coverage={item.coverage}
+                      typeSwitcher={typeSwitcher}
+                      description={item.description}
+                      advantages={item.advantages}
+                    />
+                }
+              </>
+            : <>
+                <div className={styles.header}>
+                  <PanelTitle title='Рекламные щиты' subtitle='по охвату' />
+                </div>
+                <AnalyticsList csvData={csvData} />
+              </>
+        : <PanelUplaodButton />
       }
     </div>
   )

@@ -1,35 +1,29 @@
 import React from 'react';
 import styles from './detailslist.module.css';
-import {formatPhoneNumber} from '../../utils/formatPhoneNumber';
 import {TAdvantages} from '../../types/advantages.type';
-import {TContacts} from '../../types/contacts.type';
 import classNames from 'classnames';
+import { TCoverageTypes } from '../../types/coverageTypes';
+import { defineTypeOfCoverage } from '../../utils/defineTypeOfCoverage';
 
 type TProps = {
-  type: string;
   coverage: number;
-  contacts: TContacts[];
   advantages: TAdvantages[];
   description: string;
-  onZoomClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  typeSwitcher: TCoverageTypes;
 }
 
-export default function DetailsList({ type, coverage, description, advantages, contacts }: TProps) {
+export default function DetailsList({ coverage, description, advantages, typeSwitcher }: TProps) {
   return (
     <div className={styles.container}>
       <div className={styles.info}>
         <h4 className={styles.title}>Охват</h4>
         <div className={styles.coverage}>
           <span className={classNames(styles.coverage__circle, {
-            [styles.coverage__circle__high]: type === 'high',
-            [styles.coverage__circle__middle]: type === 'middle',
-            [styles.coverage__circle__low]: type === 'low',
+            [styles.coverage__circle__high]: typeSwitcher === 'high',
+            [styles.coverage__circle__middle]: typeSwitcher === 'middle',
+            [styles.coverage__circle__low]: typeSwitcher === 'low',
           })}></span>
-          <span className={styles.coverage__title}>
-            {type === "high" ? "Высокий" : ""}
-            {type === "middle" ? "Средний" : ""}
-            {type === "low" ? "Низкий" : ""}
-          </span>
+          <span className={styles.coverage__title}>{defineTypeOfCoverage(typeSwitcher)}</span>
           <span className={styles.coverage__description}>&lt; {coverage} человек</span>
         </div>
       </div>
@@ -48,19 +42,6 @@ export default function DetailsList({ type, coverage, description, advantages, c
                 </svg>
               </span>
               <span className={styles.advantage__description}>{advantage.description}</span>
-            </li>
-          )}
-        </ul>
-      </div>
-      <div className={styles.info}>
-        <h4 className={styles.title}>Контактная информация</h4>
-        <ul className={styles.list}>
-          {contacts.map((contact) =>
-            <li className={styles.contact__item} key={contact.id}>
-              <span className={styles.name}>{contact.name}</span>
-              <span className={styles.contact}>
-                {formatPhoneNumber(contact.description)}
-              </span>
             </li>
           )}
         </ul>
