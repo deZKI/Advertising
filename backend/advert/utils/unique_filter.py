@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Загрузка данных из Excel
-file_path = '../объекты.xlsx'
+file_path = 'объекты.xlsx'
 df = pd.read_excel(file_path)
 
 # Извлечение уникальных значений для District и LargeArea

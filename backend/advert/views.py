@@ -6,11 +6,13 @@ import io
 from django.http import JsonResponse
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from langchain_core.messages import HumanMessage, SystemMessage
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
 
+from config.settings import GIGACHAT
 from .serializers import CSVUploadSerializer
 
 
@@ -61,9 +63,21 @@ class CSVUploadView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def __add_gigachat_description(self, row):
-        # Пример обработки строки
-        # Например, создание нового значения на основе других столбцов
-        return 'gigachat description'
+        messages = [
+            SystemMessage(
+                content="Ты - эксперт по рекламе c 10 летним опытом. Ты понимаешь почему данная точка полезна."
+                        "И какую рекламу лучше предложить для размещения."
+            ),
+            HumanMessage(content=f"Опишии точку для размещения рекламы. Вот данные точки:"
+                                 f"Охват: {row['value']}"
+                                 f"Название целевой аудитории: {row['targetAudience.name']}"
+                                 f"Пол целевой аудитории: {row['targetAudience.gender']}"
+                                 f"Возраст целевой аудитории: от {row['targetAudience.ageFrom']} до {row['targetAudience.ageTo']}"
+                                 f"Доход: {row['targetAudience.income']}"
+            )
+        ]
+        res = GIGACHAT(messages)
+        return res.content
 
     def __add_type(self, row):
         value = float(row['value'])

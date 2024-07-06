@@ -2,7 +2,8 @@ import os
 
 from pathlib import Path
 from dotenv import load_dotenv
-
+from langchain_community.chat_models.gigachat import GigaChat
+from langchain.schema import HumanMessage, SystemMessage
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
@@ -87,12 +88,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-RABBITMQ = {
-    "PROTOCOL": "amqp",
-    "HOST": os.getenv("RABBITMQ_HOST", "localhost"),
-    "PORT": os.getenv("RABBITMQ_PORT", 5672),
-    "USER": os.getenv("RABBITMQ_USER", "guest"),
-    "PASSWORD": os.getenv("RABBITMQ_PASSWORD", "guest"),
-}
-
-CELERY_BROKER_URL = f"{RABBITMQ['PROTOCOL']}://{RABBITMQ['USER']}:{RABBITMQ['PASSWORD']}@{RABBITMQ['HOST']}:{RABBITMQ['PORT']}"
+# Авторизация в сервисе GigaChat
+GIGACHAT = GigaChat(credentials=os.getenv('GIGACHAT'), verify_ssl_certs=False)
