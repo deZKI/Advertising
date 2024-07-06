@@ -1,8 +1,7 @@
 import React from 'react';
 import styles from './coveragelist.module.css';
-import classNames from 'classnames';
-import {convertMetersToKilometers} from '../../utils/convertMetersToKilometers';
 import {TItem} from '../../types/item.type';
+import classNames from 'classnames';
 
 type TProps = {
   list: TItem[];
@@ -18,11 +17,12 @@ export default function CoverageList({ list, onOpenClick }: TProps) {
             [styles.circle__high]: item.type === 'high',
             [styles.circle__middle]: item.type === 'middle',
             [styles.circle__low]: item.type === 'low',
-          })}></span>
-          <span className={styles.address}>{item.address}</span>
-          <span className={styles.distance}>
-            {convertMetersToKilometers(item.distance)}
+          })}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="10" fill="#56D941"/>
+            </svg>
           </span>
+          <span className={styles.address}>{item.address}</span>
         </li>
       )}
     </ul>
