@@ -1,8 +1,74 @@
-from rest_framework import viewsets
-from .models import Advertisement
-from .serializers import AdvertisementSerializer
+import json
+
+import pandas as pd
+import io
+
+from django.http import JsonResponse
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import status
+
+from .serializers import CSVUploadSerializer
 
 
-class AdvertisementViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Advertisement.objects.all()
-    serializer_class = AdvertisementSerializer
+class CSVUploadView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def __proceed_file(self, file) -> pd.DataFrame:
+        contents = file.read().decode('utf-8')
+
+        # Преобразовать содержимое в DataFrame
+        df = pd.read_csv(io.StringIO(contents))
+
+        # Замена одинарных кавычек на двойные в именах столбцов
+        df.columns = df.columns.str.replace("'", '"')
+
+        # Замена одинарных кавычек на двойные во всех значениях
+        df = df.applymap(lambda x: str(x).replace("'", '"'))
+        return df
+
+    @swagger_auto_schema(
+        operation_description="Upload a CSV file",
+        request_body=CSVUploadSerializer,
+        responses={200: openapi.Response("CSV processed successfully", CSVUploadSerializer)}
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = CSVUploadSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                file = request.FILES['file']
+                df = self.__proceed_file(file)
+
+                # Обработка данных (пример: добавление нового столбца)
+                df['description'] = df.apply(lambda row: self.__add_gigachat_description(row), axis=1)
+
+                # Обработка данных (пример: добавление нового столбца)
+                df['type'] = df.apply(lambda row: self.__add_type(row), axis=1)
+
+                processed_data = json.loads(df.to_json(orient='records'))
+
+                # Вернуть обработанные данные в формате JSON
+                for data in processed_data:
+                    data['points'] = json.loads(data['points'])
+                return JsonResponse(processed_data, status=status.HTTP_200_OK, safe=False)
+
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def __add_gigachat_description(self, row):
+        # Пример обработки строки
+        # Например, создание нового значения на основе других столбцов
+        return 'gigachat description'
+
+    def __add_type(self, row):
+        value = float(row['value'])
+        if value > 80:
+            return 'high'
+        if value > 50:
+            return 'middle'
+        return 'low'
