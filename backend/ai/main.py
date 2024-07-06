@@ -1,49 +1,64 @@
 import pandas as pd
 import numpy as np
-import torch
-import torch.nn as nn
 import json
+import joblib
 from sklearn.preprocessing import OneHotEncoder
+from typing import Dict, List, Union
 
 
-class NeuralNetwork(nn.Module):
-    def __init__(self, input_size, hidden_size, num_classes):
-        super(NeuralNetwork, self).__init__()
-        self.fc1 = nn.Linear(input_size, hidden_size)
-        self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(hidden_size, num_classes)
+def split_on_intervals(min_val: float, max_val: float, n: int) -> List[float]:
+    """
+    Разделяет диапазон значений на равные интервалы.
 
-    def forward(self, x):
-        out = self.fc1(x)
-        out = self.relu(out)
-        out = self.fc2(out)
-        return out
-
-
-def split_on_intervals(min_val, max_val, n):
+    :param min_val: Минимальное значение диапазона.
+    :param max_val: Максимальное значение диапазона.
+    :param n: Количество интервалов.
+    :return: Список границ интервалов.
+    """
     step = (max_val - min_val) / n
     intervals = [min_val + (step * x) for x in range(n + 1)]
     return intervals
 
 
-def create_groups(x_intervals, y_intervals):
+def create_groups(x_intervals: np.ndarray, y_intervals: np.ndarray) -> Dict[str, int]:
+    """
+    Создает группы на основе интервалов по координатам x и y.
+
+    :param x_intervals: Интервалы для координаты x.
+    :param y_intervals: Интервалы для координаты y.
+    :return: Словарь, где ключи - это названия групп, а значения - количество точек в группе.
+    """
     groups = {}
     x_intervals = np.concatenate([[-np.inf], x_intervals, [np.inf]])
     y_intervals = np.concatenate([[-np.inf], y_intervals, [np.inf]])
 
     for x_i in range(len(x_intervals) - 1):
         for y_i in range(len(y_intervals) - 1):
-            groups[f'x : {x_intervals[x_i]} - {x_intervals[x_i + 1]} | y : {y_intervals[y_i]} - {y_intervals[y_i + 1]}'] = 0
+            groups[
+                f'x : {x_intervals[x_i]} - {x_intervals[x_i + 1]} | y : {y_intervals[y_i]} - {y_intervals[y_i + 1]}'] = 0
 
     return groups
 
 
-def sort_on_groups(x_vals, y_vals, x_intervals, y_intervals, groups, only_vals=False):
+def sort_on_groups(x_vals: np.ndarray, y_vals: np.ndarray, x_intervals: np.ndarray, y_intervals: np.ndarray,
+                   groups: Dict[str, int], only_vals: bool = False) -> Union[Dict[str, int], List[int]]:
+    """
+    Сортирует точки по группам и подсчитывает количество точек в каждой группе.
+
+    :param x_vals: Значения координаты x.
+    :param y_vals: Значения координаты y.
+    :param x_intervals: Интервалы для координаты x.
+    :param y_intervals: Интервалы для координаты y.
+    :param groups: Словарь групп.
+    :param only_vals: Возвращать только значения (True) или словарь групп (False).
+    :return: Словарь групп или список значений.
+    """
     for x, y in zip(x_vals, y_vals):
         for x_i in range(len(x_intervals) - 1):
             for y_i in range(len(y_intervals) - 1):
-                if ((x_intervals[x_i] <= x < x_intervals[x_i + 1]) and (y_intervals[y_i] <= y < y_intervals[y_i + 1])):
-                    groups[f'x : {x_intervals[x_i]} - {x_intervals[x_i + 1]} | y : {y_intervals[y_i]} - {y_intervals[y_i + 1]}'] += 1
+                if (x_intervals[x_i] <= x < x_intervals[x_i + 1]) and (y_intervals[y_i] <= y < y_intervals[y_i + 1]):
+                    groups[
+                        f'x : {x_intervals[x_i]} - {x_intervals[x_i + 1]} | y : {y_intervals[y_i]} - {y_intervals[y_i + 1]}'] += 1
 
     if only_vals:
         return list(groups.values())
@@ -51,28 +66,35 @@ def sort_on_groups(x_vals, y_vals, x_intervals, y_intervals, groups, only_vals=F
     return groups
 
 
-def create_dataset(config, df):
+def create_dataset(config: Dict[str, Union[float, int]], df: pd.DataFrame) -> Dict[str, np.ndarray]:
+    """
+    Создает датасет на основе заданной конфигурации и исходного DataFrame.
+
+    :param config: Конфигурация с параметрами интервалов.
+    :param df: Исходный DataFrame.
+    :return: Датасет в виде словаря, где ключи - группы, а значения - количество точек в каждой группе.
+    """
     x_intervals = split_on_intervals(config['min_xval'], config['max_xval'], config['x_ngroups'])
     y_intervals = split_on_intervals(config['min_yval'], config['max_yval'], config['y_ngroups'])
 
-    groups = create_groups(x_intervals, y_intervals)
+    groups = create_groups(np.array(x_intervals), np.array(y_intervals))
     groups_values = []
 
     for i in range(len(df)):
         g = df.iloc[i]
 
-        # Check if 'points' is a string and convert it to a list of dictionaries if so
+        # Проверяем, является ли 'points' строкой, и конвертируем ее в список словарей, если это так
         if isinstance(g['points'], str):
             try:
-                g['points'] = json.loads(g['points'].replace("'", "\""))  # Replace single quotes with double quotes
+                g['points'] = json.loads(g['points'].replace("'", "\""))  # Заменяем одинарные кавычки на двойные
             except json.JSONDecodeError as e:
-                print(f"JSON decoding error in row {i}: {g['points']}")
+                print(f"Ошибка декодирования JSON в строке {i}: {g['points']}")
                 continue
 
         points = np.array([[float(x['lat']), float(x['lon'])] for x in g['points']])
 
-        group_values = sort_on_groups(points[:, 0], points[:, 1], x_intervals, y_intervals, groups.copy(),
-                                      only_vals=True)
+        group_values = sort_on_groups(points[:, 0], points[:, 1], np.array(x_intervals), np.array(y_intervals),
+                                      groups.copy(), only_vals=True)
         groups_values.append(group_values)
 
     groups_values = np.array(groups_values)
@@ -83,7 +105,14 @@ def create_dataset(config, df):
     return groups
 
 
-def apply_onehotencoding(df, columns):
+def apply_onehotencoding(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
+    """
+    Применяет one-hot encoding к заданным колонкам DataFrame.
+
+    :param df: Исходный DataFrame.
+    :param columns: Список колонок для one-hot encoding.
+    :return: DataFrame с one-hot encoding колонками.
+    """
     df_encoded = df.copy()
     encoder = OneHotEncoder(drop='first')
 
@@ -95,21 +124,19 @@ def apply_onehotencoding(df, columns):
     return df_encoded
 
 
-def main():
-    use_json = False  # If True, read JSON; if False, read CSV
+def main(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Основная функция для обработки данных и предсказаний модели.
 
-    if use_json:
-        df = pd.read_json('train_data.json')
-    else:
-        df = pd.read_csv('train_data.csv')
+    :param df: Исходный DataFrame.
+    :return: DataFrame с предсказаниями модели.
+    """
+    if 'points' in df.columns and isinstance(df['points'].iloc[0], str):
+        df['points'] = df['points'].apply(lambda x: json.loads(x.replace("'", "\"")))
 
-        # Convert JSON strings in 'points' column to list of dictionaries
-        if 'points' in df.columns and isinstance(df['points'].iloc[0], str):
-            df['points'] = df['points'].apply(lambda x: json.loads(x.replace("'", "\"")))
-
-        # Replace single quotes with double quotes in 'targetAudience' column if present
-        if 'targetAudience' in df.columns and isinstance(df['targetAudience'].iloc[0], str):
-            df['targetAudience'] = df['targetAudience'].apply(lambda x: json.loads(x.replace("'", "\"")))
+    # Заменяем одинарные кавычки на двойные в колонке 'targetAudience', если она присутствует
+    if 'targetAudience' in df.columns and isinstance(df['targetAudience'].iloc[0], str):
+        df['targetAudience'] = df['targetAudience'].apply(lambda x: json.loads(x.replace("'", "\"")))
 
     if 'targetAudience' in df.columns:
         df = pd.concat([df, pd.json_normalize(df['targetAudience'])], axis=1)
@@ -118,7 +145,7 @@ def main():
     if 'targetAudience.id' in df.columns:
         df.drop('targetAudience.id', axis=1, inplace=True)
 
-    # Rename columns containing 'targetAudience.'
+    # Переименовываем колонки, содержащие 'targetAudience.'
     new_columns = {col: col.replace('targetAudience.', '') for col in df.columns if 'targetAudience.' in col}
     df.rename(columns=new_columns, inplace=True)
 
@@ -126,27 +153,25 @@ def main():
     dataset = pd.DataFrame(create_dataset(config, df))
 
     columns_to_encode = ['income', 'name', 'gender']
-    df = apply_onehotencoding(df, columns_to_encode)
-    df2_filtered = df.iloc[:, 2:]
+    df2 = apply_onehotencoding(df, columns_to_encode)
+    df2_filtered = df2.iloc[:, 2:]
 
     dataset = dataset.join(df2_filtered)
     X = dataset
 
-    input_size = X.shape[1]
-    hidden_size = 256
-    num_classes = 1
-    loaded_model = NeuralNetwork(input_size, hidden_size, num_classes)
-    loaded_model.load_state_dict(torch.load('model_parameters.pth'))
-    loaded_model.eval()
+    # Загружаем модель CatBoost
+    loaded_model = joblib.load('ai/catboost_model.pkl')
 
-    with torch.no_grad():  # Changed to torch.no_grad() for inference
-        test_inputs = torch.tensor(X.values, dtype=torch.float32)
-        y_pred = loaded_model(test_inputs)
-        predictions_df = pd.DataFrame(y_pred.numpy(), columns=['prediction'])
+    # Прогнозируем с помощью модели CatBoost
+    predictions = loaded_model.predict(X)
 
+    predictions_df = pd.DataFrame(predictions, columns=['prediction'])
     result_df = pd.concat([df.reset_index(drop=True), predictions_df], axis=1)
-    print(result_df.head())  # Example of result output
+    return result_df
 
 
 if __name__ == "__main__":
-    main()
+    df = pd.read_csv('path_to_your_file.csv')  # Загрузите ваш DataFrame из файла
+    result = main(df)
+    result.to_csv('result.csv', index=False)
+    print("Результат сохранен в 'result.csv'")

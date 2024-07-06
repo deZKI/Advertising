@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
 
+from ai.main import main
 from config.settings import GIGACHAT
 from .serializers import CSVUploadSerializer
 
@@ -25,11 +26,6 @@ class CSVUploadView(APIView):
         # Преобразовать содержимое в DataFrame
         df = pd.read_csv(io.StringIO(contents))
 
-        # Замена одинарных кавычек на двойные в именах столбцов
-        df.columns = df.columns.str.replace("'", '"')
-
-        # Замена одинарных кавычек на двойные во всех значениях
-        df = df.applymap(lambda x: str(x).replace("'", '"'))
         return df
 
     @swagger_auto_schema(
@@ -40,25 +36,17 @@ class CSVUploadView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = CSVUploadSerializer(data=request.data)
         if serializer.is_valid():
-            try:
-                file = request.FILES['file']
-                df = self.__proceed_file(file)
+            file = request.FILES['file']
+            df = self.__proceed_file(file)
+            df = main(df)
+            # Обработка данных (пример: добавление нового столбца)
+            df['description'] = df.apply(lambda row: self.__add_gigachat_description(row), axis=1)
 
-                # Обработка данных (пример: добавление нового столбца)
-                df['description'] = df.apply(lambda row: self.__add_gigachat_description(row), axis=1)
+            # Обработка данных (пример: добавление нового столбца)
+            df['type'] = df.apply(lambda row: self.__add_type(row), axis=1)
 
-                # Обработка данных (пример: добавление нового столбца)
-                df['type'] = df.apply(lambda row: self.__add_type(row), axis=1)
-
-                processed_data = json.loads(df.to_json(orient='records'))
-
-                # Вернуть обработанные данные в формате JSON
-                for data in processed_data:
-                    data['points'] = json.loads(data['points'])
-                return JsonResponse(processed_data, status=status.HTTP_200_OK, safe=False)
-
-            except Exception as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            processed_data = json.loads(df.to_json(orient='records'))
+            return JsonResponse(processed_data, status=status.HTTP_200_OK, safe=False)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -69,18 +57,18 @@ class CSVUploadView(APIView):
                         "И какую рекламу лучше предложить для размещения."
             ),
             HumanMessage(content=f"Опишии точку для размещения рекламы. Вот данные точки:"
-                                 f"Охват: {row['value']}"
-                                 f"Название целевой аудитории: {row['targetAudience.name']}"
-                                 f"Пол целевой аудитории: {row['targetAudience.gender']}"
-                                 f"Возраст целевой аудитории: от {row['targetAudience.ageFrom']} до {row['targetAudience.ageTo']}"
-                                 f"Доход: {row['targetAudience.income']}"
+                                 f"Охват: {row['prediction']}"
+                                 f"Название целевой аудитории: {row['name']}"
+                                 f"Пол целевой аудитории: {row['gender']}"
+                                 f"Возраст целевой аудитории: от {row['ageFrom']} до {row['ageTo']}"
+                                 f"Доход: {row['income']}"
             )
         ]
         res = GIGACHAT(messages)
         return res.content
 
     def __add_type(self, row):
-        value = float(row['value'])
+        value = float(row['prediction'])
         if value > 80:
             return 'high'
         if value > 50:
