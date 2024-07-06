@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "REACT_APP_API_URL=http://localhost:8000/api react-scripts start",
-    "build": "react-scripts build"
+    "local-docker": "REACT_APP_API_URL=http://95.163.222.190/api react-scripts build",
+    "prod": "REACT_APP_API_URL=http://95.163.222.190/api react-scripts build"
   },
   "dependencies": {
     "axios": "^1.7.2",
