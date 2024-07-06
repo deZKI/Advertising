@@ -64,7 +64,7 @@ class CSVUploadView(APIView):
                                  f"Доход: {row['income']}"
             )
         ]
-        res = GIGACHAT(messages)
+        res = GIGACHAT.invoke(messages)
         return res.content
 
     def __add_type(self, row):
