@@ -1,5 +1,5 @@
 # Базовый образ
-FROM python:3.12-alpine
+FROM python:3.11.9-alpine3.19
 
 # Установка рабочей директории в контейнере
 WORKDIR /app
