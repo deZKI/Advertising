@@ -17,13 +17,6 @@ services:
       - POSTGRES_HOST=postgres_db
       - RABBITMQ_HOST=rabbitmq
 
-  postgres_db:
-    image: postgres:16
-    env_file:
-      - .env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
   frontend:
     build: frontend
     volumes:
@@ -41,29 +34,6 @@ services:
       - frontend-build_volume:/usr/share/nginx/html
     depends_on:
       - core
-
-  celery:
-    build: backend
-    volumes:
-      - static_volume:/app/static/
-      - media_volume:/app/media/
-    depends_on:
-      - core
-      - rabbitmq
-    command: celery -A config worker --concurrency=4 --loglevel=info
-    env_file:
-      - .env
-    environment:
-      - POSTGRES_HOST=postgres_db
-      - REDIS_HOST=redis
-      - RABBITMQ_HOST=rabbitmq
-    restart: always
-
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    ports:
-      - "5672"
-    restart: always
 
 volumes:
   postgres_data:
