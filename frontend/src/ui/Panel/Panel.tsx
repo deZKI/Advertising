@@ -9,13 +9,16 @@ import {TMode} from '../../types/mode.type';
 import Loading from '../Loading/Loading';
 import {useSelector} from 'react-redux';
 import Filter from '../Filter/Filter';
+import { TMaxDotsData } from '../../types/maxDotsData.type';
+import { maxDotsDataReducer } from '../../store/maxDotsData/maxDotsDataReducer';
 
 type TPanel = {
   csvData: TCSVData;
+  maxDotsData: TMaxDotsData
   modeSwitcher: TMode;
 }
 
-export default function Panel({ csvData, modeSwitcher }: TPanel) {
+export default function Panel({ csvData, maxDotsData, modeSwitcher }: TPanel) {
   const loading = useSelector<TInitialState, boolean>(state => state.loading.loading);
 
   return (
@@ -33,9 +36,14 @@ export default function Panel({ csvData, modeSwitcher }: TPanel) {
                   </div>
                   <AnalyticsList csvData={csvData} />
                 </>
-          : <div className={styles.button__container}>
-              <PanelUplaodButton text='Выберите файл' />
-            </div>
+          : Object.keys(maxDotsData).length === 0 && modeSwitcher === 'districts'
+              ? <div className={styles.header}>
+                  <PanelTitle title='Рекламные щиты' subtitle='по охвату' />
+                  <Filter />
+                </div>
+              : <div className={styles.button__container}>
+                  <PanelUplaodButton text='Выберите файл' />
+                </div>
         : <Loading />
       }
     </div>

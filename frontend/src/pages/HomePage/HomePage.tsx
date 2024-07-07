@@ -26,7 +26,7 @@ export default function HomePage() {
       </header>
       <main className={styles.main}>
         <Mode />
-        <Panel csvData={csvData} modeSwitcher={modeSwitcher} />
+        <Panel csvData={csvData} maxDotsData={maxDotsData} modeSwitcher={modeSwitcher} />
         <Map csvData={csvData} maxDotsData={maxDotsData} modeSwitcher={modeSwitcher} />
       </main>
     </>
