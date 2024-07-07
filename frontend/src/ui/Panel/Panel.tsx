@@ -2,7 +2,6 @@ import React from 'react';
 import styles from './panel.module.css';
 import PanelUplaodButton from '../PanelUploadButton/PanelUplaodButton';
 import AnalyticsList from '../AnalyticsList/AnalyticsList';
-import {TMaxDotsData} from '../../types/maxDotsData.type';
 import PanelTitle from '../../ui/PanelTitle/PanelTitle';
 import {TCSVData} from '../../types/csvData.type';
 import {TInitialState} from '../../store/reducer';
@@ -13,11 +12,10 @@ import Filter from '../Filter/Filter';
 
 type TPanel = {
   csvData: TCSVData;
-  maxDotsData: TMaxDotsData;
   modeSwitcher: TMode;
 }
 
-export default function Panel({ csvData, maxDotsData, modeSwitcher }: TPanel) {
+export default function Panel({ csvData, modeSwitcher }: TPanel) {
   const loading = useSelector<TInitialState, boolean>(state => state.loading.loading);
 
   return (
