@@ -1,95 +1,44 @@
 import React from 'react';
 import styles from './panel.module.css';
-import {setPanelIsSwitched} from '../../store/panelIsSwitched/panelIsSwitchedActions';
-import {setTypeSwitcher} from '../../store/typeSwitcher/typeSwitcherActions';
 import PanelUplaodButton from '../PanelUploadButton/PanelUplaodButton';
-import {setItemData} from '../../store/itemData/itemDataActions';
-import PanelNavigation from '../PanelNavigation/PanelNavigation';
 import AnalyticsList from '../AnalyticsList/AnalyticsList';
-import {TCoverageTypes} from '../../types/coverageTypes';
+import {TMaxDotsData} from '../../types/maxDotsData.type';
 import PanelTitle from '../../ui/PanelTitle/PanelTitle';
-import CoverageList from '../CoverageList/CoverageList';
-import DetailsList from '../DetailsList/DetailsList';
 import {TCSVData} from '../../types/csvData.type';
-import {TItem} from '../../types/item.type';
+import {TInitialState} from '../../store/reducer';
 import {TMode} from '../../types/mode.type';
-import {useDispatch} from 'react-redux';
+import Loading from '../Loading/Loading';
+import {useSelector} from 'react-redux';
+import Filter from '../Filter/Filter';
 
 type TPanel = {
-  item: TItem;
-  list: TItem[];
   csvData: TCSVData;
-  typeSwitcher: TCoverageTypes;
+  maxDotsData: TMaxDotsData;
   modeSwitcher: TMode;
-  panelIsSwitched: boolean;
 }
 
-export default function Panel({
-  item,
-  list,
-  csvData,
-  typeSwitcher,
-  modeSwitcher,
-  panelIsSwitched
-}: TPanel) {
-  const dispatch = useDispatch();
-
-  function handleOpenClick(e: React.MouseEvent<HTMLElement>) {
-    const itemID = e.currentTarget.id;
-    const item = list.find((item) => item.id === itemID);
-
-    dispatch(setPanelIsSwitched(true));
-    dispatch(setItemData(item));
-  }
-
-  function handleChooseClick(e: React.MouseEvent<HTMLButtonElement>) {
-    const buttonID = e.currentTarget.id;
-    dispatch(setTypeSwitcher(buttonID));
-  }
-
-  function handleCloseClick() {
-    dispatch(setPanelIsSwitched(false));
-  }
+export default function Panel({ csvData, maxDotsData, modeSwitcher }: TPanel) {
+  const loading = useSelector<TInitialState, boolean>(state => state.loading.loading);
 
   return (
     <div className={styles.panel}>
-      {Object.keys(csvData).length !== 0
-        ? modeSwitcher === "districts"
-            ? <>
-                <div className={styles.header}>
-                  {!panelIsSwitched
-                    ? <PanelTitle title='Рекламные щиты' subtitle='по охвату' />
-                    : <PanelTitle title='Рекламный щит' closeButton={true} onCloseClick={handleCloseClick} /> 
-                  }
-                  <PanelNavigation
-                    address={item.address}
-                    typeSwitcher={typeSwitcher}
-                    panelIsSwitched={panelIsSwitched}
-                    onChooseClick={handleChooseClick}
-                  />
-                </div>
-                {!panelIsSwitched
-                  ? <CoverageList 
-                      list={list.filter((item) => item.type === typeSwitcher)} 
-                      onOpenClick={handleOpenClick}
-                    />
-                  : <DetailsList 
-                      coverage={item.coverage}
-                      typeSwitcher={typeSwitcher}
-                      description={item.description}
-                      advantages={item.advantages}
-                    />
-                }
-              </>
-            : <>
-                <div className={styles.header}>
+      {!loading
+        ? Object.keys(csvData).length !== 0
+          ? modeSwitcher === "districts"
+              ? <div className={styles.header}>
                   <PanelTitle title='Рекламные щиты' subtitle='по охвату' />
+                  <Filter />
                 </div>
-                <AnalyticsList csvData={csvData} />
-              </>
-        : <div className={styles.button__container}>
-            <PanelUplaodButton text='Выберите файл' />
-          </div>
+              : <>
+                  <div className={styles.header}>
+                    <PanelTitle title='Рекламные щиты' subtitle='по охвату' />
+                  </div>
+                  <AnalyticsList csvData={csvData} />
+                </>
+          : <div className={styles.button__container}>
+              <PanelUplaodButton text='Выберите файл' />
+            </div>
+        : <Loading />
       }
     </div>
   )

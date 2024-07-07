@@ -18,8 +18,10 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  gap: 20px;
   padding: 16px 16px 0 16px;
   width: 100%;
+  overflow: scroll;
 }
 
 .button__container {

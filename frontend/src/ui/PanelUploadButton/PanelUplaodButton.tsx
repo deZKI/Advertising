@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import styles from './paneluploadbutton.module.css';
 import {setCSVData} from '../../store/csvData/csvDataActions';
+import {setLoading} from '../../store/loading/loadingActions';
 import {TCSVData} from '../../types/csvData.type';
 import {useDispatch} from 'react-redux';
 import axios from 'axios';
@@ -17,6 +18,8 @@ export default function PanelUplaodButton({ text }: TProps) {
     const API_URL = process.env.REACT_APP_API_URL;
     const file = e.target.files[0];
 
+    dispatch(setLoading(true));
+
     axios.post(`${API_URL}/advert`, {"file": file, "connect_gigachat": gigachat}, {
       headers: {
         'accept': 'application/json',
@@ -25,7 +28,9 @@ export default function PanelUplaodButton({ text }: TProps) {
     })
     .then((response) => {
       const csvData: TCSVData = response.data[0];
+
       dispatch(setCSVData(csvData));
+      dispatch(setLoading(false));
     })
     .catch((err) => {
       console.error(err);
