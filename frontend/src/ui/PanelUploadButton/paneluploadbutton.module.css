@@ -14,23 +14,38 @@
   border-radius: 12px;
   border: 1px solid transparent;
   width: 200px;
+  background-color: var(--primary-color);
+  transition: all .3s ease;
+  cursor: pointer;
+}
+
+.desc {
   font-family: "Segoe UI", sans-serif;
   font-size: 16px;
   font-weight: 700;
   line-height: 27px;
   color: var(--panel-background);
-  background-color: var(--primary-color);
-  transition: all .3s ease;
+  transition: color .3s ease;
+}
+
+.input {
+  display: none;
 }
 
 .button:hover {
   border: 1px solid var(--primary-color);
-  color: var(--primary-color);
   background-color: transparent;
+}
+
+.button:hover .desc {
+  color: var(--primary-color);
 }
 
 .button:active {
   border: 1px solid transparent;
-  color: var(--panel-background);
   background-color: var(--primary-color);
+}
+
+.button:active .desc {
+  color: var(--panel-background);
 }

@@ -1,8 +1,9 @@
-import {initialState} from "../reducer";
 import {SET_MODE_SWITCHER, SetModeSwitcherAction} from "./modeSwitcherActions";
+import {TModeTypes} from "../../types/modeTypes.type";
+import {initialState} from "../reducer";
 
 export type TModeSwitcherState = {
-  modeSwitcher: "banners" | "districts";
+  modeSwitcher: TModeTypes;
 }
 
 type ModeSwitcherActions = SetModeSwitcherAction;

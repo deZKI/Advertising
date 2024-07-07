@@ -1,43 +1,49 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from './paneluploadbutton.module.css';
-import {generateRandomString} from '../../utils/generateRandomString';
-import {generateRandomPoints} from '../../utils/generateRandomPoints';
-import {generateRandomType} from '../../utils/generateRandomType';
 import {setCSVData} from '../../store/csvData/csvDataActions';
 import {TCSVData} from '../../types/csvData.type';
+import Loading from '../Loading/Loading';
 import {useDispatch} from 'react-redux';
-
-const createCSVRandomData = (): TCSVData => {
-  const randomType = generateRandomType(); 
-
-  return {
-    id: generateRandomString(), 
-    points: Array.from(Array(200).keys()).map(() => {
-      const { id, lat, lon, azimuth } = generateRandomPoints();
-      return { id, lat, lon, azimuth }
-    }),
-    prediction: 26.12,
-    ageFrom: 30,
-    ageTo: 100,
-    income: "",
-    name: "0",
-    gender: "male",
-    description: "Perfect result!",
-    type: randomType,
-  }
-}
+import axios from 'axios';
 
 export default function PanelUplaodButton() {
-  const csvData = createCSVRandomData();
+  const [laoding, setLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const handleUploadClick = () => dispatch(setCSVData(csvData));
+  function handleUploadChange(e: any) {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const file = e.target.files[0];
+    const formData = new FormData();
+    
+    formData.append('file', file);
+    setLoading(true);
+
+    axios.post(`http://${API_URL}/api/advert/`, formData, {
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then((response) => {
+      const csvData: TCSVData = response.data;
+      dispatch(setCSVData(csvData));
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+
+    setLoading(false);
+  }
 
   return (
     <div className={styles.container}>
-      <button className={styles.button} onClick={handleUploadClick}>
-        Выберите файл
-      </button>
+      {!laoding
+          ? <label className={styles.button} htmlFor="upload-button">
+              <input id="upload-button" className={styles.input} type="file" accept=".csv" onChange={handleUploadChange} />
+              <span className={styles.desc}>Выберите файл</span>
+            </label>
+          : <Loading />
+      }
     </div>
   )
 }

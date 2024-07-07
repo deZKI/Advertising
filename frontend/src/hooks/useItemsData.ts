@@ -7,12 +7,12 @@ import {TItem} from '../types/item.type';
 import {AnyAction} from "redux";
 
 export function useItemsData() {
-  const accounts = useSelector<TInitialState, TItem[]>(state => state.itemsData.itemsData);
+  const itemsData = useSelector<TInitialState, TItem[]>(state => state.itemsData.itemsData);
   const dispatch = useDispatch<ThunkDispatch<TInitialState, void, AnyAction>>();
 
   useEffect(() => {
     dispatch(setItemsDataAsync());
   }, []);
 
-  return accounts;
+  return itemsData;
 }
