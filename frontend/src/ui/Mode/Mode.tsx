@@ -1,11 +1,12 @@
 import React from 'react';
 import styles from './mode.module.css';
 import {setModeSwitcher} from '../../store/modeSwitcher/modeSwitcherActions';
+import {TModeTypes} from '../../types/modeTypes.type';
 import {useSelector, useDispatch} from 'react-redux';
 import {TInitialState} from '../../store/reducer';
 
 export default function Mode() {
-  const modeSwitcher = useSelector<TInitialState, "banners" | "districts">(state => state.modeSwitcher.modeSwitcher);
+  const modeSwitcher = useSelector<TInitialState, TModeTypes>(state => state.modeSwitcher.modeSwitcher);
   const dispatch = useDispatch();
 
   function handleChooseClick(e: React.MouseEvent<HTMLButtonElement>) {
@@ -31,7 +32,7 @@ export default function Mode() {
         className={`
           ${styles.button}
           ${styles.button__right}
-          ${styles.button__active === "districts" ? styles.button__active : ""}
+          ${modeSwitcher === "districts" ? styles.button__active : ""}
         `}
         onClick={handleChooseClick}
       >

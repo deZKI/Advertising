@@ -13,7 +13,6 @@ type TMap = {
   csvData: TCSVData;
   modeSwitcher: TMode;
   panelIsSwitched: boolean;
-  onChooseClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export default function Map({
@@ -21,8 +20,7 @@ export default function Map({
   list,
   csvData,
   modeSwitcher,
-  panelIsSwitched,
-  onChooseClick
+  panelIsSwitched
 }: TMap) {
   return (
     <MapContainer 
@@ -42,22 +40,18 @@ export default function Map({
       />
       {Object.keys(csvData).length !== 0 && modeSwitcher === "banners" 
         ? csvData.points.map((point) => 
-            <button id={`${item.id}`} className="button" onClick={onChooseClick}>
-              <Marker 
-                position={[point.lat, point.lon]} 
-                icon={getIconByType(csvData.type)}
-                key={point.id}
-              />
-            </button>
+            <Marker 
+              position={[point.lat, point.lon]} 
+              icon={getIconByType(csvData.type)}
+              key={point.id}
+            />
           )
         : list.map((item) => 
-            <button id={`${item.id}`} className="button" onClick={onChooseClick}>
-              <Marker 
-                position={[item.coordinate.latitude, item.coordinate.longitude]} 
-                icon={getIconByType(item.type)}
-                key={item.id}
-              />
-            </button>
+            <Marker 
+              position={[item.coordinate.latitude, item.coordinate.longitude]} 
+              icon={getIconByType(item.type)}
+              key={item.id}
+            />
           )
       }
     </MapContainer>

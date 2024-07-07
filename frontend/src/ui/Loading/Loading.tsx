@@ -1,8 +1,8 @@
 import React from 'react';
-import styles from './loaderpage.module.css';
-import LoaderGif from '../../assets/images/loader.gif';
+import styles from './loading.module.css';
+import LoaderGif from '../../assets/images/loading.gif';
 
-export default function LoaderPage() {
+export default function Loading() {
   return (
     <div className={styles.container}>
       <img className={styles.loader} src={LoaderGif} alt="Загрузка..." />

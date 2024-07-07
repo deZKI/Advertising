@@ -2,7 +2,7 @@ import {TCoverageTypes} from "./coverageTypes";
 import {TPoints} from "./points.type";
 
 export type TCSVData = {
-  id: string;
+  hash: string;
   points: TPoints[];
   prediction: number;
   ageFrom: number;
