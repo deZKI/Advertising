@@ -36,11 +36,15 @@ class CSVUploadView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = CSVUploadSerializer(data=request.data)
         if serializer.is_valid():
+            connect_gigachat = serializer.data['connect_gigachat']
             file = request.FILES['file']
             df = self.__proceed_file(file)
             df = main(df)
             # Обработка данных (пример: добавление нового столбца)
-            df['description'] = df.apply(lambda row: self.__add_gigachat_description(row), axis=1)
+            if connect_gigachat:
+                df['description'] = df.apply(lambda row: self.__add_gigachat_description(row), axis=1)
+            else:
+                df['description'] = "Описание"
 
             # Обработка данных (пример: добавление нового столбца)
             df['type'] = df.apply(lambda row: self.__add_type(row), axis=1)
