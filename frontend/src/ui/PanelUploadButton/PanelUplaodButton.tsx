@@ -13,12 +13,10 @@ export default function PanelUplaodButton() {
   function handleUploadChange(e: any) {
     const API_URL = process.env.REACT_APP_API_URL;
     const file = e.target.files[0];
-    const formData = new FormData();
-    
-    formData.append('file', file);
+
     setLoading(true);
 
-    axios.post(`http://${API_URL}/api/advert/`, formData, {
+    axios.post(`${API_URL}/advert`, {'file': file, 'connect_gigachat': false}, {
       headers: {
         'accept': 'application/json',
         'Content-Type': 'multipart/form-data'
