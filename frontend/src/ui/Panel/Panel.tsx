@@ -87,7 +87,9 @@ export default function Panel({
                 </div>
                 <AnalyticsList csvData={csvData} />
               </>
-        : <PanelUplaodButton />
+        : <div className={styles.button__container}>
+            <PanelUplaodButton text='Выберите файл' />
+          </div>
       }
     </div>
   )

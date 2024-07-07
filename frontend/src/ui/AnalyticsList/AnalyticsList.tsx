@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './analyticslist.module.css';
-import { defineTypeOfCoverage } from '../../utils/defineTypeOfCoverage';
+import PanelUplaodButton from '../PanelUploadButton/PanelUplaodButton';
+import {defineTypeOfCoverage} from '../../utils/defineTypeOfCoverage';
 import {TCSVData} from '../../types/csvData.type';
 import classNames from 'classnames';
 
@@ -23,26 +24,31 @@ export default function AnalyticsList({ csvData }: TProps) {
           <span className={styles.coverage__prediction}>{csvData.prediction}</span>
         </div>
       </div>
-      <div className={styles.info}>
-        <h4 className={styles.title}>Описание</h4>
-        <p className={styles.description}>{csvData.description}</p>
-      </div>
+      {csvData.description !== "Описание" &&
+        <div className={styles.info}>
+          <h4 className={styles.title}>Описание</h4>
+          <p className={styles.description}>{csvData.description}</p>
+        </div>
+      }
       <div className={styles.info}>
         <h4 className={styles.title}>Данные по целевой аудитории</h4>
         <ul className={styles.list}>
           <li className={styles.item}>
-            <span className={styles.auditory__title}>Возраст</span>
+            <span className={styles.auditory__title}>Возраст:</span>
             <span className={styles.auditory__data}>{csvData.ageFrom} - {csvData.ageTo}</span>
           </li>
           <li className={styles.item}>
-            <span className={styles.auditory__title}>Доход</span>
+            <span className={styles.auditory__title}>Доход:</span>
             <span className={styles.auditory__data}>{csvData.income}</span>
           </li>
           <li className={styles.item}>
-            <span className={styles.auditory__title}>Пол</span>
+            <span className={styles.auditory__title}>Пол:</span>
             <span className={styles.auditory__data}>{csvData.gender}</span>
           </li>
         </ul>
+      </div>
+      <div className={styles.button__container}>
+        <PanelUplaodButton text="Загрузить новый файл" />
       </div>
     </div>
   );
