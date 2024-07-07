@@ -13,8 +13,9 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
 
 from ai.main import main
+from ai.optimization import optimization
 from config.settings import GIGACHAT
-from .serializers import CSVUploadSerializer
+from .serializers import CSVUploadSerializer, OptimizationRequestSerializer
 
 
 class CSVUploadView(APIView):
@@ -66,7 +67,7 @@ class CSVUploadView(APIView):
                                  f"Пол целевой аудитории: {row['gender']}"
                                  f"Возраст целевой аудитории: от {row['ageFrom']} до {row['ageTo']}"
                                  f"Доход: {row['income']}"
-            )
+                         )
         ]
         res = GIGACHAT.invoke(messages)
         return res.content
@@ -78,3 +79,30 @@ class CSVUploadView(APIView):
         if value > 50:
             return 'middle'
         return 'low'
+
+
+class OptimizationView(APIView):
+
+    @swagger_auto_schema(
+        operation_description="Upload a CSV file",
+        request_body=OptimizationRequestSerializer,
+        responses={200: openapi.Response("CSV processed successfully", OptimizationRequestSerializer)}
+    )
+    def post(self, request):
+        serializer = OptimizationRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            age_from = data['age_from']
+            age_to = data['age_to']
+            name = data['name']
+            income = data['income']
+            gender = data['gender']
+            iterations = data['iterations']
+            number_dots = data['number_dots']
+
+            # Выполнение оптимизации
+            max_value, max_dots = optimization(age_from, age_to, name, income, gender, number_dots,
+                                               iterations)
+            max_dots = [tuple(x) for x in max_dots[['lat', 'lon']].itertuples(index=False, name=None)]
+            return Response({'max_value': max_value, 'max_dots': max_dots}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
