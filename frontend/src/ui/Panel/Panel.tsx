@@ -10,7 +10,6 @@ import Loading from '../Loading/Loading';
 import {useSelector} from 'react-redux';
 import Filter from '../Filter/Filter';
 import { TMaxDotsData } from '../../types/maxDotsData.type';
-import { maxDotsDataReducer } from '../../store/maxDotsData/maxDotsDataReducer';
 
 type TPanel = {
   csvData: TCSVData;
@@ -23,11 +22,39 @@ export default function Panel({ csvData, maxDotsData, modeSwitcher }: TPanel) {
 
   return (
     <div className={styles.panel}>
+      {/* {!loading
+          ? Object.keys(csvData).length !== 0 && modeSwitcher === 'banners'
+              ? <>
+                  <div className={styles.header}>
+                    <PanelTitle title='Рекламные щиты' subtitle='по охвату' />
+                  </div>
+                  <AnalyticsList csvData={csvData} />
+                </>
+              : <div className={styles.button__container}>
+                  <PanelUplaodButton text='Выберите файл' />
+                </div>
+          : <Loading />
+      }
+      {!loading
+          ? modeSwitcher === 'districts'
+              ? <div className={styles.header}>
+                  <PanelTitle title='Рекламные щиты' subtitle='по охвату' />
+                  <Filter />
+                </div>
+              : <div className={styles.header}>
+                  <PanelTitle title='Рекламные щиты' subtitle='по охвату' />
+                  <Filter />
+                </div>
+          : <Loading />
+      } */}
       {!loading
         ? Object.keys(csvData).length !== 0
           ? modeSwitcher === "districts"
               ? <div className={styles.header}>
-                  <PanelTitle title='Рекламные щиты' subtitle='по охвату' />
+                  <PanelTitle 
+                    title='Рекламные щиты' 
+                    subtitle={`${maxDotsData.max_value}`.slice(0.5)} 
+                  />
                   <Filter />
                 </div>
               : <>
@@ -38,7 +65,7 @@ export default function Panel({ csvData, maxDotsData, modeSwitcher }: TPanel) {
                 </>
           : Object.keys(maxDotsData).length === 0 && modeSwitcher === 'districts'
               ? <div className={styles.header}>
-                  <PanelTitle title='Рекламные щиты' subtitle='по охвату' />
+                  <PanelTitle title='Рекламные щиты' subtitle={`${maxDotsData.max_value}`.slice(0.5)} />
                   <Filter />
                 </div>
               : <div className={styles.button__container}>

@@ -8,8 +8,9 @@
 
 .info {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
 }
 
 .description {
@@ -21,11 +22,10 @@
 }
 
 .input {
-  padding: 8px 18px;
+  padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid var(--primary-color);
-  width: 100%;
-  max-width: 100%;
+  width: 150px;
   color: var(--primary-color);
 }
 

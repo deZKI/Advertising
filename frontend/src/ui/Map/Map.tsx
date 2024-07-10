@@ -1,6 +1,7 @@
 import React from 'react';
 import 'leaflet/dist/leaflet.css';
 import './map.css';
+import {generateRandomString} from '../../utils/generateRandomString';
 import {MapContainer, TileLayer, Marker} from 'react-leaflet';
 import {TMaxDotsData} from '../../types/maxDotsData.type';
 import {getIconByType} from '../../utils/getIconByType';
@@ -22,23 +23,23 @@ export default function Map({ csvData, maxDotsData, modeSwitcher }: TMap) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {Object.keys(csvData).length !== 0 && modeSwitcher === "banners" &&
-         csvData.points.map((point) => 
-            <Marker 
-              position={[point.lat, point.lon]} 
-              icon={getIconByType(csvData.type)}
-              key={point.id}
-            />
-          )
-        }
-        {Object.keys(maxDotsData).length !== 0 && modeSwitcher === "districts" &&
-          maxDotsData.max_dots.map((coordinates) => 
-            <Marker 
-              position={[Number(coordinates.lat), Number(coordinates.lon)]} 
-              icon={getIconByType("none")}
-              key={coordinates.id}
-            />
-          )
-        }
+        csvData.points.map((point) => 
+          <Marker 
+            position={[point.lat, point.lon]} 
+            icon={getIconByType(csvData.type)}
+            key={point.id}
+          />
+        )
+      }
+      {Object.keys(maxDotsData).length !== 0 && modeSwitcher === "districts" &&
+        maxDotsData.max_dots.map((coordinates) => 
+          <Marker 
+            position={[Number(coordinates[0]), Number(coordinates[1])]} 
+            icon={getIconByType("none")}
+            key={generateRandomString()}
+          />
+        )
+      }
     </MapContainer>
   );
 }

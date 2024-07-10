@@ -27,7 +27,7 @@ export function getIconByType(type: string) {
   });
 
   const coverageNoneIcon = L.icon({
-    iconUrl: CoverageNoneIcon,
+    iconUrl: CoverageHighIcon,
     iconSize: [40, 40],
     iconAnchor: [20, 40],
     popupAnchor: [0, -40],

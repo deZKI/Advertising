@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styles from './filter.module.css';
 import {setMaxDotsData} from '../../store/maxDotsData/maxDotsDataActions';
-import {generateRandomString} from '../../utils/generateRandomString';
 import {setLoading} from '../../store/loading/loadingActions';
 import {TMaxDotsData} from '../../types/maxDotsData.type';
 import {useDispatch} from 'react-redux';
@@ -59,14 +58,8 @@ export default function Filter() {
     })
     .then((response) => {
       const maxDotsData: TMaxDotsData = response.data;
-      const modifiedMaxDotsData = maxDotsData.max_dots.map((coordinates) => {
-        return {
-          ...coordinates,
-          id: generateRandomString()
-        }
-      }) 
 
-      dispatch(setMaxDotsData(modifiedMaxDotsData));
+      dispatch(setMaxDotsData(maxDotsData));
       dispatch(setLoading(false));
     })
     .catch((err) => {
@@ -77,30 +70,30 @@ export default function Filter() {
   return (
     <div className={styles.container}>
       <div className={styles.info}>
-        <span className={styles.description}>Количество итераций</span>
+        <span className={styles.description}>Кол. итераций:</span>
         <input className={styles.input} type="text" value={iterations} onChange={handleIterationsChange} />
       </div>
       <div className={styles.info}>
-        <div className={styles.description}>Количество щитов</div>
+        <div className={styles.description}>Кол. щитов:</div>
         <input className={styles.input} type="text" value={numberDots} onChange={handleNumberDotsChange} />
       </div>
       <div className={styles.info}>
-        <span className={styles.description}>Доход</span>
+        <span className={styles.description}>Возраст</span>
+        <span className={styles.description}>от:</span>
+        <input className={styles.input} style={{ width: "50px" }} type="text" value={age_from} onChange={handleAgeFromChange} />
+        <span className={styles.description}>до:</span>
+        <input className={styles.input} style={{ width: "50px" }} type="text" value={age_to} onChange={handleAgeToChange} />
+      </div>
+      <div className={styles.info}>
+        <span className={styles.description}>Доход:</span>
         <input className={styles.input} type="text" value={income} onChange={handleIncomeChange} />
       </div>
       <div className={styles.info}>
-        <span className={styles.description}>Возраст</span>
-        <span className={styles.description}>от</span>
-        <input className={styles.input} type="text" value={age_from} onChange={handleAgeFromChange} />
-        <span className={styles.description}>до</span>
-        <input className={styles.input} type="text" value={age_to} onChange={handleAgeToChange} />
-      </div>
-      <div className={styles.info}>
-        <span className={styles.description}>Имя</span>
+        <span className={styles.description}>Имя:</span>
         <input className={styles.input} type="text" value={name} onChange={handleNameChange} />
       </div>
       <div className={styles.info}>
-        <span className={styles.description}>Пол</span>
+        <span className={styles.description}>Пол:</span>
         <input className={styles.input} type="text" value={gender} onChange={handleGenderChange} />
       </div>
       <button className={styles.button} onClick={handleUploadClick}>
