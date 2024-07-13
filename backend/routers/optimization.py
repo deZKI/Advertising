@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from models import OptimizationRequest
-from services import optimization as ai_optimization
+from services.optimization import optimization as ai_optimization
 
 router = APIRouter()
 
