@@ -27,7 +27,7 @@ export default function Map({ csvData, maxDotsData, modeSwitcher }: TMap) {
           <Marker 
             position={[point.lat, point.lon]} 
             icon={getIconByType(csvData.type)}
-            key={point.id}
+            key={generateRandomString()}
           />
         )
       }

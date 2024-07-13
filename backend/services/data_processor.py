@@ -55,7 +55,7 @@ class DataProcessor:
         # Устанавливаем prediction в 0, если все точки находятся на воде или в зелени - такая фильтрация на зону
 
         result_df.loc[result_df['points'].apply(all_points_on_water_or_vegetation), 'prediction'] = 0
-        return dataset
+        return result_df
 
     @staticmethod
     def add_gigachat_description(row):
